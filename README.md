@@ -1,2 +1,2 @@
-# Ticksy
+# TickSy
 Tikcketing System (Proiect colectiv)

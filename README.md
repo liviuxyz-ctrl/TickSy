@@ -1,2 +1,4 @@
 # TickSy
-Tikcketing System (Proiect colectiv)
+##Ticketing system
+## Project import
+####1. Import directly into PyCharm

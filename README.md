@@ -1,4 +1,4 @@
 # TickSy
-##Ticketing system
+## Ticketing system
 ## Project import
-####1. Import directly into PyCharm
+#### 1. Import directly into PyCharm

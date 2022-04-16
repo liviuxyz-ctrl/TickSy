@@ -27,7 +27,7 @@ class Employees (models.Model):
 class EmployeesPrivateData(models.Model):
     employee_id = models.OneToOneField(Employees, primary_key=True, on_delete=models.CASCADE, auto_created=True)
     email = models.EmailField(max_length=50, unique=True)
-    password = models.CharField(max_length=55)
+    password = models.CharField(max_length=100)
 
 
 class StatusOfTickets(models.TextChoices):
@@ -50,7 +50,7 @@ class Tickets (models.Model):
     user_email = models.EmailField(max_length=50)
     created_at = models.DateTimeField(default=timezone.now)
     due_datetime = models.DateTimeField()
-    finish_at = models.DateTimeField()
+    finish_at = models.DateTimeField(null=True)
     status = models.CharField(max_length=50, choices=StatusOfTickets.choices, default=StatusOfTickets.assigned)
     importance = models.CharField(max_length=50, choices=ImportanceOfTickets.choices, default=ImportanceOfTickets.medium)
     responsible_team_id = models.ForeignKey(Teams, on_delete=models.RESTRICT)

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Team</title>
+</head>
+<body>
+    <form action="." method="POST">{% csrf_token %}
+    TeamName: <input type="text" name="team_name"/><br/>
+    TeamHeadName: <input type="text" name="team_head_name"/><br/>
+    TeamHeadEmail: <input type="text" name="team_head_email"/><br/>
+    <input type="submit" name="CreateTeam"/>
+    </form>
+</body>
+</html>

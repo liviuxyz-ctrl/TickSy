@@ -1,16 +1,18 @@
 <html>
 <head>
-<title>Create a Post </title>
+<title>Register </title>
 </head>
 
 <body>
-<h1>Create a Post </h1>
-<form action="" method="POST">
-{% csrf_token %}
-    Fullname: <input type="text" name="name"/><br/>
+<h1>Register </h1>
+<form action="." method="POST">{% csrf_token %}
+    Fullname: <input type="text" name="fullname"/><br/>
     Email: <input type="text" name="email"/><br/>
     Department: <input type="text" name="department"/><br/>
-<input type="submit" value="Post"/>
+    Password: <input type="text" name="password"/><br/>
+    RePassword: <input type="text" name="repassword"/><br/>
+    TeamName: <input type="text" name="teamname"/><br/>
+    <input type="submit" name="register"/>
 </form>
 </body>
 

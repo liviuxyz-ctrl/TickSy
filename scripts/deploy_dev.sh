@@ -99,6 +99,27 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
+function apply_migrations(){
+  echo "Applying Django migrations";
+  MANAGE_PY_PATH="$PARENT_DIR/ticksy/manage.py"
+  if [ -f "$MANAGE_PY_PATH" ]; then
+    if [ "$(python3 "$MANAGE_PY_PATH" migrate)" ]; then
+      echo "Migration applied successfully!"
+    else
+      echo "Failed to apply migrations, aborting!"
+      exit 1;
+    fi
+  else
+    echo "manage.py not found, aborting!";
+    exit 1;
+  fi
+}
+
+function create_superuser(){
+  echo "Creating Django superuser";
+  python3 "$MANAGE_PY_PATH" createsuperuser;
+}
+
 echo;
 echo "TickSy development environment deployment script";
 echo;
@@ -112,7 +133,7 @@ do
     read -r -p 'Do you want to start the setup process? Y(y)/N(n) ' choice
     case "$choice" in
       n|N) break;;
-      y|Y) echo; install_apt_dependencies; echo; generate_python_venv; echo; install_pip_dependencies; echo; configure_database; break;; #my_sql_secure; break;;
+      y|Y) echo; install_apt_dependencies; echo; generate_python_venv; echo; install_pip_dependencies; echo; my_sql_secure; echo; configure_database; echo; apply_migrations; echo; create_superuser; break;;
       *) echo 'Response not valid';;
     esac
 done

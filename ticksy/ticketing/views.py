@@ -1,28 +1,56 @@
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from rest_framework.parsers import JSONParser
-from .serializers import EmployeesSerializer,TeamSerializer
-from .models import Employees,Teams,EmployeesPrivateData,Tickets
-# from .forms import RegisterEmployeeForm,CreateTeamForm
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.hashers import check_password
+from .models import Employees, Teams, EmployeesPrivateData, Tickets
 from django.contrib.auth.hashers import make_password
+from rest_framework.decorators import api_view
+from rest_framework import status
+
 
 def test(request):
     return render(request, 'test.html')
     # return HttpResponse('test')
 
-def login(request):
-    if request.method == 'POST' and request.POST.get("login"):
-        email = request.POST.get('email')
-        password = request.POST.get('password')
 
-        if email and password:
+@api_view(['GET', 'POST'])
+def login(request):
+    login_api_response = {
+        "login_deny": False,
+        "email_exists": False,
+        "successful_pwd_match": False,
+        "successful_login": False
+    }
+    if not request.session.get('login_state', default=False):
+
+        if request.method == 'GET':
+            # Display login page
+            return render(request, 'login.html')
+
+        if request.method == 'POST':
+            if 'login_email' not in request.data.keys() or 'login_password' not in request.data.keys():
+                return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
             try:
-                e = Employees.objects.get(email=email)
-                if e.password == make_password(password):
-                    return render(request, 'test.html')
-            except:
-                return render(request,'login.html', {'unkonform data':True})
-    return render(request, 'login.html')
+                employee_entry = EmployeesPrivateData.objects.get(email=request.data['login_email'])
+            except ObjectDoesNotExist:
+                return JsonResponse(login_api_response)
+            login_api_response['email_exists'] = True
+            if check_password(request.data['login_password'], employee_entry.password):
+                login_api_response['successful_pwd_match'] = True
+                try:
+                    request.session['login_state'] = True
+                    login_api_response['successful_login'] = True
+                except:
+                    login_api_response['successful_login'] = False
+            else:
+                login_api_response['successful_pwd_match'] = False
+            return JsonResponse(login_api_response)
+    else:
+        login_api_response['login_deny'] = True
+        login_api_response['email_exists'] = None
+        login_api_response['successful_pwd_match'] = None
+        login_api_response['successful_login'] = None
+        return JsonResponse(login_api_response)
 
 
 def register(request):
@@ -33,31 +61,31 @@ def register(request):
     if request.method == 'POST' and request.POST.get("register"):
         full_name = request.POST.get('fullname')
         email = request.POST.get('email')
-        department  = request.POST.get('department')
+        department = request.POST.get('department')
         password = request.POST.get('password')
         repassword = request.POST.get('repassword')
         team_name = request.POST.get('teamname')
         if full_name and email and department and password and repassword and team_name:
             # try:
-                if password != repassword:
-                    return render(request, 'register.html',{'password_dont_mach':True})
-                e = Employees()
-                e.full_name = full_name
-                e.email = email
-                e.department = department
-                e.team_id = Teams.objects.get(team_name=team_name)
+            if password != repassword:
+                return render(request, 'register.html', {'password_dont_mach': True})
+            e = Employees()
+            e.full_name = full_name
+            e.email = email
+            e.department = department
+            e.team_id = Teams.objects.get(team_name=team_name)
 
-                ep = EmployeesPrivateData()
-                ep.email = email
-                ep.password = make_password(password)
-                ep.employee_id = e
+            ep = EmployeesPrivateData()
+            ep.email = email
+            ep.password = make_password(password)
+            ep.employee_id = e
 
-                e.save()
-                ep.save()
-                # except IntegrityError:
-                #     return render(request, 'test.html','Email already in use')
-                print('ok')
-                return render(request, 'login.html')
+            e.save()
+            ep.save()
+            # except IntegrityError:
+            #     return render(request, 'test.html','Email already in use')
+            print('ok')
+            return render(request, 'login.html')
     return render(request, 'register.html')
 
 
@@ -68,9 +96,9 @@ def team(request):
         team_head_email = request.POST.get('team_head_email')
         if team_name and team_head_name and team_head_email:
             team = Teams()
-            team.team_name=team_name
-            team.team_head_full_name=team_head_name
-            team.team_head_email=team_head_email
+            team.team_name = team_name
+            team.team_head_full_name = team_head_name
+            team.team_head_email = team_head_email
             team.save()
             return render(request, 'test.html')
     return render(request, 'team.html')
@@ -132,33 +160,29 @@ def ticket(request):
 #         seroalizer.update(data)
 
 
-
-
-
-
-
-    #     if request.POST.get('name') and request.POST.get('email') and request.POST.get('department'):
-    #         e = Employees()
-    #         e.full_name = request.POST.get('name')
-    #         e.email = request.POST.get('email')
-    #         e.department = request.POST.get('department')
-    #         e.team_id = Teams.objects.get(id=1)
-    #         e.save()
-    #         return render(request, 'test.html')
-    #     else:
-    #         return render(request, 'register.html')
-    # else:
-    #     return render(request, 'register.html')
-    #cleaned_data
+#     if request.POST.get('name') and request.POST.get('email') and request.POST.get('department'):
+#         e = Employees()
+#         e.full_name = request.POST.get('name')
+#         e.email = request.POST.get('email')
+#         e.department = request.POST.get('department')
+#         e.team_id = Teams.objects.get(id=1)
+#         e.save()
+#         return render(request, 'test.html')
+#     else:
+#         return render(request, 'register.html')
+# else:
+#     return render(request, 'register.html')
+# cleaned_data
 
 def index(request):
-        submitbutton = request.POST.get('Register')
-        print(submitbutton)
-        if submitbutton: # execute this code
-            context = {'submitbutton': submitbutton}
-            return render(request, 'test.html')
+    submitbutton = request.POST.get('Register')
+    print(submitbutton)
+    if submitbutton:  # execute this code
+        context = {'submitbutton': submitbutton}
+        return render(request, 'test.html')
 
-        return render(request, 'index.html')
+    return render(request, 'index.html')
+
 
 def contact(reqest):
     return render(reqest, 'contact.html')

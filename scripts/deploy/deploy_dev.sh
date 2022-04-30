@@ -6,7 +6,7 @@
 
 PARENT_DIR="$(dirname "$(pwd)")"
 PYTHON3_PACK_NAME="python3"
-APT_PACKAGES="python3-venv python3-dev python3-pip mariadb-server libmariadb-dev-compat libmariadb-dev libssl-dev"
+APT_PACKAGES="python3-venv python3-dev python3-pip mariadb-server libmariadb-dev-compat libmariadb-dev libssl-dev memcached libmemcached-tools"
 
 function install_apt_package(){
   echo "Checking installation of $1"

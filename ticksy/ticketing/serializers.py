@@ -1,23 +1,76 @@
+from django.contrib.auth.hashers import make_password
 
-from django.core.validators import EmailValidator
-import django.contrib.auth.password_validation as validators
+from .models import Employees, EmployeesPrivateData, Teams
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.password_validation import validate_password, get_default_password_validators
 from rest_framework import serializers
-from .models import Employees, Teams, EmployeesPrivateData
-
+from rest_framework.exceptions import ValidationError
 
 class UserSerializer(serializers.ModelSerializer):
+    re_password = serializers.CharField(max_length=100)
+
     class Meta:
         model = EmployeesPrivateData
-        fields = ['email', 'password']
+        fields = ['employee_id', 'email', 'password', 're_password']
         extra_kwargs = {
             'email': {
-                'validators': [EmailValidator()],
+                'validators': [],
             }
         }
 
-    def validate_password(self, value):
-        return validators.validate_password(password=value,
-                                            password_validators=validators.get_default_password_validators())
+    @classmethod
+    def validate_password(cls, value):
+        # Raise ValidationError if default password validator fails
+        validate_password(password=value,
+                          password_validators=get_default_password_validators())
+        return value
+
+    def validate_re_password(self, value):
+        password = self.get_initial().get('password')
+        if password != value:
+            raise ValidationError("Passwords do not match.", code='passwords_mismatch')
+        return value
+
+    def create(self, validated_data):
+        if 're_password' in validated_data:
+            del validated_data['re_password']
+            validated_data['password'] = make_password(validated_data['password'])
+            return EmployeesPrivateData.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.employee_id = validated_data.get('employee_id', instance.employee_id)
+        instance.email = validated_data.get('email', instance.email)
+        instance.password = validated_data.get('password', instance.password)
+        instance.save()
+
+
+class EmployeesSerializer(serializers.ModelSerializer):
+    team_name = serializers.CharField(max_length=256)
+
+    class Meta:
+        model = Employees
+        fields = ['id', 'full_name', 'email', 'department', 'team_name']
+
+    @classmethod
+    def validate_team_name(cls, value):
+        try:
+            Teams.objects.get(team_name=value)
+        except ObjectDoesNotExist:
+            raise ValidationError("Team does not exist.", code='team_does_not_exist')
+        return value
+
+    def create(self, validated_data):
+        if 'team_id' not in validated_data and 'team_name' in validated_data:
+            validated_data['team_id'] = Teams.objects.get(team_name=validated_data['team_name'])
+            del validated_data['team_name']
+            return Employees.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.full_name = validated_data.get('fullname', instance.full_name)
+        instance.email = validated_data.get('email', instance.email)
+        instance.department = validated_data.get('department', instance.department)
+        instance.team_name = validated_data.get('team_name', instance.team)
+        instance.save()
 
 
 class TeamSerializer(serializers.Serializer):
@@ -29,34 +82,6 @@ class TeamSerializer(serializers.Serializer):
     #     model = Teams
     #     fields = ['team_name','team_head_full_name', 'team_head_email']
 
-
 # team_name = models.CharField(max_length=250)
 #     team_head_full_name = models.CharField(max_length=50)
 #     team_head_email
-class EmployeesSerializer(serializers.Serializer):
-    full_name = serializers.CharField(max_length=50)
-    email = serializers.EmailField(max_length=50)
-    department = serializers.CharField(max_length=50)
-    team = serializers.CharField()
-
-    def find_team_id(self):
-        """
-        Search in the database for the team
-        """
-
-    def create(self, validated_data):
-        return Employees.objents.create(**validated_data)
-
-    def update(self, instance, validated_data):
-        instance.full_name = validated_data.get('fullname', instance.full_name)
-        instance.email = validated_data.get('email', instance.email)
-        instance.department = validated_data.get('department', instance.department)
-        instance.team = validated_data.get('team', instance.team)
-        instance.save()
-
-    def set_team(self, instance, team_id):
-        """
-        Set the instance team to a valid team id, it's needed because the form will give the team name not id.
-        """
-        instance.team = team_id
-        instance.save()

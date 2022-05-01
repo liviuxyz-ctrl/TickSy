@@ -122,6 +122,8 @@ def register(request):
             response_obj = register_error_validation(employee_private_data, register_api_response)
             try:
                 if response_obj:
+                    logger.critical("Failed to generate EmployeePrivateData, deleting Employee record from database!")
+                    employee_obj.delete()
                     return response_obj
                 employee_private_data_obj = employee_private_data.save()
                 if employee_private_data_obj is None:

@@ -74,19 +74,29 @@ class EmployeesSerializer(serializers.ModelSerializer):
 
 
 class TeamSerializer(serializers.ModelSerializer):
+    disable_team_name_validation = False
+
     class Meta:
         model = Teams
         fields = ['team_name', 'team_head_full_name', 'team_head_email', 'open_tickets', 'closed_tickets_month',
                   'number_of_members']
 
-    @classmethod
-    def validate_team_name(cls, value):
-        try:
-            Teams.objects.get(team_name=value)
-        except ObjectDoesNotExist:
-            return value
+    def __init__(self, disable_team_name_validation=False, **kwargs):
+        if 'disable_team_name_validation' in kwargs:
+            del kwargs['disable_team_name_validation']
+        self.disable_team_name_validation = disable_team_name_validation
+        super().__init__(**kwargs)
+
+    def validate_team_name(self, value):
+        if not self.disable_team_name_validation:
+            try:
+                Teams.objects.get(team_name=value)
+            except ObjectDoesNotExist:
+                return value
+            else:
+                raise ValidationError('Team with the same name already exists.', code='team_already_exists')
         else:
-            raise ValidationError('Team with the same name already exists.', code='team_already_exists')
+            return value
 
     def create(self, validated_data):
         return Teams.objects.create(**validated_data)

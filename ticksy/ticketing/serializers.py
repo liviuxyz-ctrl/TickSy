@@ -5,6 +5,7 @@ from django.contrib.auth.password_validation import validate_password, get_defau
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+
 class UserSerializer(serializers.ModelSerializer):
     re_password = serializers.CharField(max_length=100)
 
@@ -72,15 +73,29 @@ class EmployeesSerializer(serializers.ModelSerializer):
         instance.save()
 
 
-class TeamSerializer(serializers.Serializer):
-    team_name = serializers.CharField(max_length=250)
-    team_head_name = serializers.CharField(max_length=50)
-    team_head_email = serializers.EmailField(max_length=50)
+class TeamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teams
+        fields = ['team_name', 'team_head_full_name', 'team_head_email', 'open_tickets', 'closed_tickets_month',
+                  'number_of_members']
 
-    # class Meta:
-    #     model = Teams
-    #     fields = ['team_name','team_head_full_name', 'team_head_email']
+    @classmethod
+    def validate_team_name(cls, value):
+        try:
+            Teams.objects.get(team_name=value)
+        except ObjectDoesNotExist:
+            return value
+        else:
+            raise ValidationError('Team with the same name already exists.', code='team_already_exists')
 
-# team_name = models.CharField(max_length=250)
-#     team_head_full_name = models.CharField(max_length=50)
-#     team_head_email
+    def create(self, validated_data):
+        return Teams.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.team_name = validated_data.get('team_name', instance.full_name)
+        instance.team_head_full_name = validated_data.get('team_head_full_name', instance.full_name)
+        instance.team_head_email = validated_data.get('team_head_email', instance.full_name)
+        instance.open_tickets = validated_data.get('open_tickets', instance.full_name)
+        instance.closed_tickets_month = validated_data.get('closed_tickets_month', instance.full_name)
+        instance.number_of_members = validated_data.get('number_of_members', instance.full_name)
+        instance.save()

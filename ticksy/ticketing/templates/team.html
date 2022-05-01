@@ -6,9 +6,8 @@
 </head>
 <body>
     <form action="." method="POST">{% csrf_token %}
-    TeamName: <input type="text" name="team_name"/><br/>
-    TeamHeadName: <input type="text" name="team_head_name"/><br/>
-    TeamHeadEmail: <input type="text" name="team_head_email"/><br/>
+    TeamName: <input type="text" name="register_team_name"/><br/>
+    TeamHeadName: <input type="text" name="register_team_head_full_name"/><br/>
     <input type="submit" name="CreateTeam"/>
     </form>
 </body>

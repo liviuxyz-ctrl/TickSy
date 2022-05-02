@@ -1,4 +1,4 @@
-from .models import Employees, EmployeesPrivateData, Teams
+from .models import Employees, EmployeesPrivateData, Teams, Tickets
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.password_validation import validate_password, get_default_password_validators
@@ -109,3 +109,30 @@ class TeamSerializer(serializers.ModelSerializer):
         instance.closed_tickets_month = validated_data.get('closed_tickets_month', instance.full_name)
         instance.number_of_members = validated_data.get('number_of_members', instance.full_name)
         instance.save()
+
+
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tickets
+        fields = ['user_full_name', 'user_email', 'created_at', 'due_datetime', 'finish_at', 'status', 'importance',
+                  'responsible_team_id', 'responsible_employee_id', 'description']
+
+    @classmethod
+    def validate_user_email(cls, value):
+        return value
+
+    @classmethod
+    def validate_responsible_team_id(cls, value):
+        try:
+            Teams.objects.get(id=value)
+        except ObjectDoesNotExist:
+            raise ValidationError(f'Team with id {value} does not exist!', code='team_does_not_exist')
+        return value
+
+    @classmethod
+    def validate_responsible_employee_id(cls, value):
+        try:
+            Employees.objects.get(id=value)
+        except ObjectDoesNotExist:
+            raise ValidationError(f'Employee with id {value} does not exist!', code='employee_does_not_exist')
+        return value

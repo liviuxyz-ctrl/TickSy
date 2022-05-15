@@ -246,10 +246,11 @@ def lookup_team(request, team_name):
         lookup_team_api_response['team_lookup_object'] = None
         return Response(data=lookup_team_api_response)
 
+
 @api_view(['GET', 'POST'])
 def ticket(request):
-    if request.method == 'POST':
 
+    if request.method == 'POST':
         from_mane = request.POST.get('ticket_from_name')
         from_email = request.POST.get('ticket_from_email')
         to_email = request.POST.get('ticket_to_email')
@@ -258,7 +259,6 @@ def ticket(request):
         team = request.POST.get('ticket_team')
         domain = request.POST.get('ticket_domain')
         deadline = request.POST.get('ticket_deadline')
-
         if from_mane and from_email and to_email and description and team and domain:
             ticket = Tickets()
             ticket.user_full_name = from_mane
@@ -274,26 +274,79 @@ def ticket(request):
             return render(request, 'test.html')
     return render(request, 'ticket.html')
 
-@api_view(['POST'])
+
+@api_view(['GET', 'POST'])
 def upload(request):
-    if request.method == 'POST':
-
-        uploaded_pdf = request.FILES['upload_pdf']
-        uploaded_archive = request.FILES['upload_archive']
-        uploaded_image = request.FILES['upload_image']
-
-        fs = FileSystemStorage()
-        saved_pdf = fs.save(uploaded_pdf.name,uploaded_pdf)
-        saved_archive = fs.save(uploaded_archive.name, uploaded_archive)
-        saved_image = fs.save(uploaded_image.name, uploaded_image)
-        file = Files()
-        file.pdf_root = fs.url(saved_pdf)
-        file.image_root = fs.url(saved_image)
-        file.archive_root = fs.url(saved_archive)
-        file.ticket_id = Tickets.objects.all()[0]
-        file.save()
-
-        print(Tickets.objects.all())
+    upload_files_api_response = {
+        'upload_files_deny': False,
+        'pdf_file_successful_uploaded': False,
+        'archive_file_successful_uploaded': False,
+        'image_file_successful_uploaded': False,
+        'validator_error_messages': []
+    }
 
 
-    return render(request, 'upload.html')
+    if request.session.get('login_state', default=False):
+
+        if request.method == 'GET':
+            # Display uploading files page, this should be contained in ticket page
+            return render(request, 'upload.html')
+
+        if request.method == 'POST':
+            #*****************************
+            # for required_post_header_key in post_header_data_validation_list:   no idea how to adapt this
+            #
+            # if required_post_header_key not in request.data.keys():
+            #     logger.critical("Malformed HTTP POST request, missing form keys!")
+            #     return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+
+            uploaded_pdf = request.FILES['upload_pdf']
+            uploaded_archive = request.FILES['upload_archive']
+            uploaded_image = request.FILES['upload_image']
+
+            fs = FileSystemStorage()
+            file_obj = Files()
+
+            if uploaded_pdf is not None:
+                saved_pdf = fs.save(uploaded_pdf.name, uploaded_pdf)
+                upload_files_api_response['pdf_file_successful_uploaded'] = True
+            else:
+                saved_pdf = None
+
+            if uploaded_archive is not None:
+                saved_archive = fs.save(uploaded_archive.name, uploaded_archive)
+                upload_files_api_response['archive_file_successful_uploaded'] = True
+            else:
+                saved_archive = None
+
+            if uploaded_image is not None:
+                saved_image = fs.save(uploaded_image.name, uploaded_image)
+                upload_files_api_response['image_file_successful_uploaded'] = True
+            else:
+                saved_image = None
+
+            file_obj.pdf_root = fs.url(saved_pdf)
+            file_obj.image_root = fs.url(saved_image)
+            file_obj.archive_root = fs.url(saved_archive)
+
+            #this shoul be changed with the actual ticket
+            file_obj.ticket_id = Tickets.objects.all()[0]
+            file_obj.save()
+
+            if file_obj is None:
+                logger.critical("Failed to generate File entrance, aborting files uploading!")
+                fs.delete(saved_pdf)
+                fs.delete(saved_archive)
+                fs.delete(saved_image)
+                return HttpResponse(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            upload_files_api_response['pdf_file_successful_uploaded'] = True
+            return Response(data=upload_files_api_response)
+    else:
+        logger.debug(f"Team register deny, user not logged in!")
+        upload_files_api_response['upload_files_deny'] = True
+        upload_files_api_response['pdf_file_successful_uploaded'] = None
+        upload_files_api_response['archive_file_successful_uploaded'] = None
+        upload_files_api_response['image_file_successful_uploaded'] = None
+        upload_files_api_response['validator_error_messages'] = None
+        return Response(data=upload_files_api_response)

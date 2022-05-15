@@ -6,14 +6,14 @@
 <body>
 <h1>Create TIcket </h1>
 <form action="." method="POST">{% csrf_token %}
-    FromName: <input type="text" name="fromname"/><br/>
-    FromEmail: <input type="text" name="fromemail"/><br/>
-    To: <input type="text" name="to"/><br/>
-    Description: <input type="text" name="description"/><br/>
-    Priority: <input type="text" name="priority"/><br/>
-    Team: <input type="text" name="team"/><br/>
-    Domain: <input type="text" name="domain"/><br/>
-    DeadLine: <input type="date" value="datetime-local" name="deadline"/><br/>
+    FromName: <input type="text" name="ticket_from_name"/><br/> // only for the tesing phase
+    FromEmail: <input type="text" name="ticket_from_email"/><br/> //
+    To: <input type="text" name="ticket_to_email"/><br/>
+    Description: <input type="text" name="ticket_description"/><br/>
+    Priority: <input type="text" name="ticket_priority"/><br/>
+    Team: <input type="text" name="ticket_team"/><br/>
+    Domain: <input type="text" name="ticket_domain"/><br/>
+    DeadLine: <input type="date" value="datetime-local" name="ticket_deadline"/><br/>
     <input type="submit" name="Create"/>
 </form>
 </body>

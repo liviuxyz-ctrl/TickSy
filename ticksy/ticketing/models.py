@@ -60,15 +60,15 @@ class Tickets (models.Model):
 
 class Files(models.Model):
     ticket_id = models.ForeignKey(Tickets, on_delete=models.CASCADE)
-    pdf_root = models.CharField(max_length=150)
-    image_root = models.CharField(max_length=150)
-    archive_root = models.CharField(max_length=150)
+    pdf_root = models.FileField(upload_to='pdfs/',null=True)
+    image_root = models.FileField(upload_to='images/',null=True)
+    archive_root = models.FileField(upload_to='archives/', null=True)
 
 
 class Messages (models.Model):
     ticket_id = models.ForeignKey(Tickets, on_delete=models.CASCADE)
     mes_form = models.EmailField(max_length=50)
     mes_to = models.EmailField(max_length=50)
-    text = models.TextField(max_length=250)
+    text = models.TextField(max_length=500)
     send_date = models.DateTimeField(default=timezone.now)
 

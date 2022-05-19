@@ -2,7 +2,8 @@ import logging
 
 from .models import Employees, Teams, EmployeesPrivateData, Tickets
 from .serializers import EmployeesSerializer, UserSerializer, TeamSerializer
-from django.http import HttpResponse, HttpResponseRedirect
+from django.conf import settings
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import check_password
@@ -20,6 +21,26 @@ def set_login_state_session(request, user_email: str):
     request.session['user_email'] = user_email
 
 
+def index(request):
+    if request.method == 'GET':
+        return render(request, 'index.html')
+
+
+def tickets_creator(request):
+    if request.method == 'GET':
+        return render(request, 'tickets_creator.html')
+
+
+def tickets_list(request):
+    if request.method == 'GET':
+        return render(request, 'tickets_list.html')
+
+
+def contact_page(request):
+    if request.method == 'GET':
+        return render(request, 'contact-us.html')
+
+
 @api_view(['GET', 'POST'])
 def login(request, logout_user=False):
     login_api_response = {
@@ -34,7 +55,13 @@ def login(request, logout_user=False):
 
         if request.method == 'GET':
             # Display login page
-            return render(request, 'login.html')
+            if not request.session.get('login_state', default=False):
+                return render(request, 'login.html')
+            else:
+                if settings.ENABLE_REST_FRAMEWORK_RESPONSE:
+                    return Response(data=login_api_response)
+                else:
+                    return JsonResponse(data=login_api_response)
 
         if request.method == 'POST':
             for required_post_header_key in post_header_data_validation_list:
@@ -44,7 +71,10 @@ def login(request, logout_user=False):
             try:
                 employee_entry = EmployeesPrivateData.objects.get(email=request.data['login_email'])
             except ObjectDoesNotExist:
-                return Response(data=login_api_response)
+                if settings.ENABLE_REST_FRAMEWORK_RESPONSE:
+                    return Response(data=login_api_response)
+                else:
+                    return JsonResponse(data=login_api_response)
             login_api_response['email_exists'] = True
             if check_password(request.data['login_password'], employee_entry.password):
                 login_api_response['successful_pwd_match'] = True
@@ -55,7 +85,10 @@ def login(request, logout_user=False):
                     login_api_response['successful_login'] = False
             else:
                 login_api_response['successful_pwd_match'] = False
-            return Response(data=login_api_response)
+            if settings.ENABLE_REST_FRAMEWORK_RESPONSE:
+                return Response(data=login_api_response)
+            else:
+                return JsonResponse(data=login_api_response)
     else:
         # Logout flag set
         if logout_user:
@@ -66,7 +99,10 @@ def login(request, logout_user=False):
         login_api_response['email_exists'] = None
         login_api_response['successful_pwd_match'] = None
         login_api_response['successful_login'] = None
-        return Response(data=login_api_response)
+        if settings.ENABLE_REST_FRAMEWORK_RESPONSE:
+            return Response(data=login_api_response)
+        else:
+            return JsonResponse(data=login_api_response)
 
 
 def logout(request):

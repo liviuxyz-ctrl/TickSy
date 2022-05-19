@@ -20,9 +20,13 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', views.login),
+    path('index/', views.index, name="home_page"),
+    path('create-ticket/', views.tickets_creator, name="ticket_creator_page"),
+    path('tickets/', views.tickets_list, name="ticket_list_page"),
+    path('contact/', views.contact_page, name="contact_page"),
+    path('login/', views.login, name="login_page"),
     path('login/logout_user=<str:logout_user>', views.login),
-    path('register/', views.register),
+    path('register/', views.register, name="register_page"),
     path('team/', views.register_team),
     path('team/lookup_team=<str:team_name>', views.lookup_team),
     path('ticket/', views.ticket)

@@ -1,33 +1,34 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>asta_e_bun</title>
-    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static '/ticksy/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i&amp;display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/css/theme.bootstrap_4.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
-    <link rel="stylesheet" href="/assets/css/Ludens---Create-Edit-Form.css">
-    <link rel="stylesheet" href="/assets/css/vanilla-zoom.min.css">
+    <link rel="stylesheet" href="{% static '/ticksy/css/Ludens---Create-Edit-Form.css' %}">
+    <link rel="stylesheet" href="{% static '/ticksy/css/vanilla-zoom.min.css' %}">
 </head>
 
 <body style="height: 650px;margin: 5px;">
     <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
-        <div class="container"><img data-bss-hover-animate="swing" src="/assets/img/logo.png" style="height: 58px;margin: 5px;"><a class="navbar-brand logo" href="#">TickSy</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button><a class="btn btn-primary" role="button" data-bss-hover-animate="pulse" style="background: var(--bs-body-color);" href="/login.html">PlaceHolder</a>
+        <div class="container"><img data-bss-hover-animate="swing" src="{% static '/ticksy/img/logo.png' %}" style="height: 58px;margin: 5px;"><a class="navbar-brand logo" href="#">TickSy</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button><a class="btn btn-primary" role="button" data-bss-hover-animate="pulse" style="background: var(--bs-body-color);" href=        <div class="container"><img data-bss-hover-animate="swing" src="{% static '/ticksy/img/logo.png' %}" style="height: 58px;margin: 5px;"><a class="navbar-brand logo" href="#">TickSy</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button><a class="btn btn-primary" role="button" data-bss-hover-animate="pulse" style="background: var(--bs-body-color);" href="{% url 'login_page' %}">PlaceHolder</a>>PlaceHolder</a>
             <div class="collapse navbar-collapse" id="navcol-1"><button class="navbar-toggler" data-bs-toggle="collapse"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="/index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="/tickets_creator.html">CREATE A TICKET</a></li>
-                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="/tickets_list.html">TICKETS</a></li>
-                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="/contact-us.html">Contact Us</a></li>
+                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'home_page' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'ticket_creator_page' %}">CREATE A TICKET</a></li>
+                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'ticket_list_page' %}">TICKETS</a></li>
+                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'contact_page' %}">Contact Us</a></li>
                 </ul>
             </div>
         </div>
@@ -37,7 +38,7 @@
         <div class="text-center">
             <h4 class="text-dark mb-4">Create an Account!</h4>
         </div>
-        <form class="user">
+        <form class="user">{% csrf_token %}
             <div>
                 <div class="row mb-3" style="text-align: center;"><input class="form-control form-control-user" type="text" id="fullName" placeholder="Full Name" required="yes"><input class="form-control form-control-user" type="email" id="email" placeholder="Email Address" required="yes" style="margin: 10px 0px 0px 0px;"></div>
                 <div class="row mb-3">
@@ -56,7 +57,7 @@
             <hr>
         </form>
         <div class="text-center"></div>
-        <div class="text-center"><a class="small" href="/login.html">Already have an account? Login!</a></div>
+        <div class="text-center"><a class="small" href="{% url 'login_page' %}">Already have an account? Login!</a></div>
     </div>
     <footer class="page-footer dark" style="margin-top: 100px;">
         <div class="container">
@@ -100,26 +101,26 @@
     </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/assets/js/bs-init.js"></script>
+    <script src="{% static '/ticksy/js/bs-init.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
-    <script src="/assets/js/vanilla-zoom.js"></script>
-    <script src="/assets/js/theme.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/hero-slider-main-1.js"></script>
-    <script src="/assets/js/hero-slider-main.js"></script>
+    <script src="{% static '/ticksy/js/vanilla-zoom.js' %}"></script>
+    <script src="{% static '/ticksy/js/theme.js' %}"></script>
+    <script src="{% static '/ticksy/js/bootstrap.min.js' %}"></script>
+    <script src="{% static '/ticksy/js/hero-slider-main-1.js' %}"></script>
+    <script src="{% static '/ticksy/js/hero-slider-main.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/widgets/widget-filter.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/widgets/widget-storage.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <script src="/assets/js/isInViewport.min.js"></script>
-    <script src="/assets/js/jquery-1.11.3.min.js"></script>
-    <script src="/assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="/assets/js/Ludens---Create-Edit-Form-1.js"></script>
-    <script src="/assets/js/Ludens---Create-Edit-Form-2.js"></script>
-    <script src="/assets/js/Ludens---Create-Edit-Form-3.js"></script>
-    <script src="/assets/js/Ludens---Create-Edit-Form.js"></script>
-    <script src="/assets/js/tether.min.js"></script>
+    <script src="{% static '/ticksy/js/isInViewport.min.js' %}"></script>
+    <script src="{% static '/ticksy/js/jquery-1.11.3.min.js' %}"></script>
+    <script src="{% static '/ticksy/js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static '/ticksy/js/Ludens---Create-Edit-Form-1.js' %}"></script>
+    <script src="{% static '/ticksy/js/Ludens---Create-Edit-Form-2.js' %}"></script>
+    <script src="{% static '/ticksy/js/Ludens---Create-Edit-Form-3.js' %}"></script>
+    <script src="{% static '/ticksy/js/Ludens---Create-Edit-Form.js' %}"></script>
+    <script src="{% static '/ticksy/js/tether.min.js' %}"></script>
 </body>
 
 </html>

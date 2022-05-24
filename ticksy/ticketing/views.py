@@ -26,6 +26,11 @@ def index(request):
         return render(request, 'index.html')
 
 
+def about_us(request):
+    if request.method == 'GET':
+        return render(request, 'about-us.html')
+
+
 def tickets_creator(request):
     if request.method == 'GET':
         return render(request, 'tickets_creator.html')

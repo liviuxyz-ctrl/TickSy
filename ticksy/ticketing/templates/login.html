@@ -44,7 +44,7 @@
                     <div class="card mb-5">
                         <div class="card-body d-flex flex-column align-items-center">
                             <div class="bs-icon-xl bs-icon-circle bs-icon-primary text-light bs-icon my-4"></div>
-                            <form action="." class="text-center" method="post">{% csrf_token %}
+                            <form id="login_form" action="." class="text-center" method="post">{% csrf_token %}
                                 <div class="mb-3"><input class="form-control" type="email" name="login_email" placeholder="Email"></div>
                                 <div class="mb-3"><input class="form-control" type="password" name="login_password" placeholder="Password"></div>
                                 <div class="mb-3"><button class="btn btn-primary d-block w-100" type="submit" name="login" style="background: var(--bs-body-color);">Login</button></div>
@@ -118,6 +118,7 @@
     <script src="{% static '/ticksy/js/Ludens---Create-Edit-Form-3.js' %}"></script>
     <script src="{% static '/ticksy/js/Ludens---Create-Edit-Form.js' %}"></script>
     <script src="{% static '/ticksy/js/tether.min.js' %}"></script>
+                            <script src="{% static  'ticksy/js/login-guard.js'%}"></script>
 </body>
 
 </html>

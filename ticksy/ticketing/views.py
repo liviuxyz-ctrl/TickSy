@@ -46,6 +46,12 @@ def contact_page(request):
         return render(request, 'contact-us.html')
 
 
+def login_page(request):
+    if not request.session.get('login_state', default=False):
+        if request.method == 'GET':
+            return render(request, 'login.html')
+
+
 @api_view(['GET', 'POST'])
 def login(request, logout_user=False):
     login_api_response = {
@@ -59,14 +65,11 @@ def login(request, logout_user=False):
     if not request.session.get('login_state', default=False):
 
         if request.method == 'GET':
-            # Display login page
-            if not request.session.get('login_state', default=False):
-                return render(request, 'login.html')
+            login_api_response['login_deny'] = True
+            if settings.ENABLE_REST_FRAMEWORK_RESPONSE:
+                return Response(data=login_api_response)
             else:
-                if settings.ENABLE_REST_FRAMEWORK_RESPONSE:
-                    return Response(data=login_api_response)
-                else:
-                    return JsonResponse(data=login_api_response)
+                return JsonResponse(data=login_api_response)
 
         if request.method == 'POST':
             for required_post_header_key in post_header_data_validation_list:

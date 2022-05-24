@@ -22,13 +22,13 @@
 
 <body>
     <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
-        <div class="container"><img data-bss-hover-animate="swing" src="{% static '/ticksy/img/logo.png' %}" style="height: 58px;margin: 5px;"><a class="navbar-brand logo" href="#">TickSy</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button><a class="btn btn-primary" role="button" data-bss-hover-animate="pulse" style="background: var(--bs-body-color);" href={% url 'login_page' %}>PlaceHolder</a>
+        <div class="container"><img data-bss-hover-animate="swing" src="{% static '/ticksy/img/logo.png' %}" style="height: 58px;margin: 5px;"><a class="navbar-brand logo" href="#">TickSy</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button><a class="btn btn-primary" role="button" data-bss-hover-animate="pulse" id="user_btn" style="background: var(--bs-body-color);" href="{% url 'login_page' %}">PlaceHolder</a>
             <div class="collapse navbar-collapse" id="navcol-1"><button class="navbar-toggler" data-bs-toggle="collapse"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse"         href="{% url 'home_page' %}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse"         href="{% url 'ticket_creator_page' %}">CREATE A TICKET</a></li>
-                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse"         href="{% url 'ticket_list_page' %}">TICKETS</a></li>
-                    <li class="nav-item"><a class="nav-link active" data-bss-hover-animate="pulse"  href="{% url 'contact_page' %}">Contact Us</a></li>
+                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'home_page' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'ticket_creator_page' %}">CREATE A TICKET</a></li>
+                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'ticket_list_page' %}">TICKETS</a></li>
+                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'contact_page' %}">Contact Us</a></li>
                 </ul>
             </div>
         </div>

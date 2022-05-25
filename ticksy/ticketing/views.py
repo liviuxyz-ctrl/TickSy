@@ -92,7 +92,8 @@ def login(request, logout_user=False):
         'login_deny': False,
         'email_exists': False,
         'successful_pwd_match': False,
-        'successful_login': False
+        'successful_login': False,
+        'validator_error_messages': []
     }
     post_header_data_validation_list = ['login_email', 'login_password']
 
@@ -110,6 +111,13 @@ def login(request, logout_user=False):
                 if required_post_header_key not in request.data.keys():
                     logger.critical("Malformed HTTP POST request, missing form keys!")
                     return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+            for required_post_header_key in post_header_data_validation_list:
+                if not request.data[required_post_header_key]:
+                    login_api_response['validator_error_messages'].append("Email or password field cannot be empty!")
+                    if settings.ENABLE_REST_FRAMEWORK_RESPONSE:
+                        return Response(data=login_api_response)
+                    else:
+                        return JsonResponse(data=login_api_response)
             try:
                 employee_entry = EmployeesPrivateData.objects.get(email=request.data['login_email'])
             except ObjectDoesNotExist:

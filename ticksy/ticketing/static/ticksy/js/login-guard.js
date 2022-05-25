@@ -8,12 +8,13 @@ $( document ).ready(function() {
               if(response){
                   if(response.user_logged_in === false){
                       $( "#user_btn" ).html("LOGIN/REGISTER")
-                      $( "#ticket_creator_nav" ).hide()
-                      $( "#ticket_list_nav" ).hide()
                   }
                   else{
-                      $( "#user_btn" ).html("LOGOUT")
+                      $( "#user_btn" ).html("LOGOUT");
+                      $( "#ticket_creator_nav" ).show()
+                      $( "#ticket_list_nav" ).show()
                   }
+                  $( "#user_btn" ).show()
               }
               else{
                   console.log("Failed to retrieve user state using API!")

@@ -33,12 +33,19 @@ def about_us(request):
 
 def tickets_creator(request):
     if request.method == 'GET':
-        return render(request, 'tickets_creator.html')
+
+        if request.session.get('login_state', default=False):
+            return render(request, 'tickets_creator.html')
+        else:
+            return render(request, 'login.html')
 
 
 def tickets_list(request):
     if request.method == 'GET':
-        return render(request, 'tickets_list.html')
+        if request.session.get('login_state', default=False):
+            return render(request, 'tickets_list.html')
+        else:
+            return render(request, 'login.html')
 
 
 def contact_page(request):
@@ -48,8 +55,35 @@ def contact_page(request):
 
 def login_page(request):
     if not request.session.get('login_state', default=False):
+
         if request.method == 'GET':
             return render(request, 'login.html')
+
+        elif request.method == 'POST':
+            if settings.DEBUG:
+                logger.critical(f"Received POST (Failed JavaScript event overload) in request coming from: '{request.get_host()} "
+                                f"{request.get_full_path()}'")
+            return render(request, 'login.html')
+
+    else:
+        return HttpResponseRedirect('/index/')
+
+
+@api_view(['GET'])
+def request_login_state(request):
+    login_state_api_response = {
+        'user_logged_in': False,
+        'user_email': None
+    }
+
+    if 'login_state' in request.session.keys():
+        login_state_api_response['user_logged_in'] = True
+        login_state_api_response['user_email'] = request.session['user_email']
+
+    if settings.ENABLE_REST_FRAMEWORK_RESPONSE:
+        return Response(data=login_state_api_response)
+    else:
+        return JsonResponse(data=login_state_api_response)
 
 
 @api_view(['GET', 'POST'])
@@ -118,7 +152,7 @@ def logout(request):
         if request.session.get('login_state', default=False):
             logger.info(f"Logging out user with email '{request.session['user_email']}'!")
             request.session.clear()
-    return HttpResponseRedirect('/login/')
+    return HttpResponseRedirect('/index/')
 
 
 def register_error_validation(serializer_object, api_response, api_response_key='validator_error_messages'):

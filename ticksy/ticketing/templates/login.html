@@ -26,8 +26,8 @@
             <div class="collapse navbar-collapse" id="navcol-1"><button class="navbar-toggler" data-bs-toggle="collapse"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'home_page' %}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'ticket_creator_page' %}">CREATE A TICKET</a></li>
-                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'ticket_list_page' %}">TICKETS</a></li>
+                    <li class="nav-item" id="ticket_creator_nav"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'ticket_creator_page' %}">CREATE A TICKET</a></li>
+                    <li class="nav-item" id="ticket_list_nav"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'ticket_list_page' %}">TICKETS</a></li>
                     <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'contact_page' %}">Contact Us</a></li>
                 </ul>
             </div>
@@ -113,12 +113,12 @@
     <script src="{% static '/ticksy/js/isInViewport.min.js' %}"></script>
     <script src="{% static '/ticksy/js/jquery-1.11.3.min.js' %}"></script>
     <script src="{% static '/ticksy/js/jquery.magnific-popup.min.js' %}"></script>
-    <script src="{% static '/ticksy/js/Ludens---Create-Edit-Form-1.js' %}"></script>
     <script src="{% static '/ticksy/js/Ludens---Create-Edit-Form-2.js' %}"></script>
     <script src="{% static '/ticksy/js/Ludens---Create-Edit-Form-3.js' %}"></script>
     <script src="{% static '/ticksy/js/Ludens---Create-Edit-Form.js' %}"></script>
     <script src="{% static '/ticksy/js/tether.min.js' %}"></script>
-                            <script src="{% static  'ticksy/js/login-guard.js'%}"></script>
+    <script type="text/javascript" src="{% static  'ticksy/js/login-guard.js'%}"></script>
+    <script type="text/javascript" src="{% static  'ticksy/js/login-api-request.js'%}"></script>
 </body>
 
 </html>

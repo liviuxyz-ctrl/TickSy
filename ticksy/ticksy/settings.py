@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-p7&7m259b@+y*lib-3=a83c1y+m0319(v8r^yz3ow$$m7%+q+k
 DEBUG = True
 ENABLE_REST_FRAMEWORK_RESPONSE = False
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 

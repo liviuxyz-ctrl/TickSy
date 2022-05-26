@@ -39,16 +39,27 @@
         <div class="text-center">
             <h4 class="text-dark mb-4">Create an Account!</h4>
         </div>
-        <form class="user">{% csrf_token %}
+        <form class="user" id="register_form" action="." method="post">{% csrf_token %}
             <div>
-                <div class="row mb-3" style="text-align: center;"><input class="form-control form-control-user" type="text" id="fullName" placeholder="Full Name" required="yes"><input class="form-control form-control-user" type="email" id="email" placeholder="Email Address" required="yes" style="margin: 10px 0px 0px 0px;"></div>
-                <div class="row mb-3">
-                    <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="password" id="password" placeholder="Password" required="yes"></div>
-                    <div class="col-sm-6"><input class="form-control form-control-user" type="password" id="verifyPassword" placeholder="Repeat Password" required="yes"></div>
+                <div class="row mb-3" style="text-align: center;">
+                    <input class="form-control form-control-user" type="text" placeholder="Full Name" required="yes" name="register_fullname" id="register_form_full_name_input">
+                    <input class="form-control form-control-user" type="email" placeholder="Email Address" required="yes" name="register_email" id="register_form_email_input" style="margin: 10px 0px 0px 0px;">
                 </div>
                 <div class="row mb-3">
-                    <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="text" id="departmentName" placeholder="Department name" required="yes"></div>
-                    <div class="col-sm-6"><input class="form-control form-control-user" type="text" id="teamName" placeholder="Team Name" required="yes"></div>
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                        <input class="form-control form-control-user" type="password" placeholder="Password" required="yes" name="register_password" id="register_form_password_input">
+                    </div>
+                    <div class="col-sm-6">
+                        <input class="form-control form-control-user" type="password" placeholder="Repeat Password" required="yes" name="register_repassword" id="register_form_verify_password_input">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                        <input class="form-control form-control-user" type="text" placeholder="Department name" required="yes" name="register_department" id="register_form_department_name_input">
+                    </div>
+                    <div class="col-sm-6">
+                        <input class="form-control form-control-user" type="text" placeholder="Team Name" required="yes" name="register_team_name" id="register_form_team_name_input">
+                    </div>
                 </div>
             </div>
             <div class="row mb-3">
@@ -121,7 +132,8 @@
     <script src="{% static '/ticksy/js/Ludens---Create-Edit-Form-3.js' %}"></script>
     <script src="{% static '/ticksy/js/Ludens---Create-Edit-Form.js' %}"></script>
     <script src="{% static '/ticksy/js/tether.min.js' %}"></script>
-    <script src="{% static  'ticksy/js/login-guard.js'%}"></script>
+    <script type="text/javascript" src="{% static  'ticksy/js/login-guard.js'%}"></script>
+    <script type="text/javascript" src="{% static  'ticksy/js/register-api-request.js'%}"></script>
 </body>
 
 </html>

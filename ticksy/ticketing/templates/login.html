@@ -46,9 +46,15 @@
                         <div class="card-body d-flex flex-column align-items-center">
                             <div class="bs-icon-xl bs-icon-circle bs-icon-primary text-light bs-icon my-4"></div>
                             <form id="login_form" action="." class="text-center" method="post">{% csrf_token %}
-                                <div class="mb-3"><input class="form-control" type="email" name="login_email" placeholder="Email" id="login_form_email_input"></div>
-                                <div class="mb-3"><input class="form-control" type="password" name="login_password" placeholder="Password" id="login_form_password_input"></div>
-                                <div class="mb-3"><button class="btn btn-primary d-block w-100" type="submit" name="login" style="background: var(--bs-body-color);">Login</button></div>
+                                <div class="mb-3">
+                                    <input class="form-control" type="email" name="login_email" placeholder="Email" id="login_form_email_input">
+                                </div>
+                                <div class="mb-3">
+                                    <input class="form-control" type="password" name="login_password" placeholder="Password" id="login_form_password_input">
+                                </div>
+                                <div class="mb-3">
+                                    <button class="btn btn-primary d-block w-100" type="submit" name="login" style="background: var(--bs-body-color);">Login</button>
+                                </div>
                                 <p>Don't have an account?</p>
                                 <p><a href="{% url 'register_page' %}">Sign Up here</a></p>
                             </form>

@@ -64,9 +64,13 @@ $( "#login_form" ).submit(function( event ) {
             }
         },
         error: function (xhr, status, error) {
-            console.log(xhr.status);
-            console.log(status);
-            console.log(error)
+            swal({
+                icon: "error",
+                title: "Internal server error!",
+                text: "HTTP Error code: '" + xhr.status + " " + error + "'"
+            }).then(() => {
+                reset_login_form();
+            });
         }
     });
 });

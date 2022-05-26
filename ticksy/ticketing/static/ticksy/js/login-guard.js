@@ -19,9 +19,13 @@ $( document ).ready(function() {
                 }
             },
             error: function (xhr, status, error) {
-                console.log(xhr.status);
-                console.log(status);
-                console.log(error)
+                swal({
+                    icon: "error",
+                    title: "Internal server error!",
+                    text: "HTTP Error code: '" + xhr.status + " " + error + "'"
+                }).then(() => {
+                    window.location = window.location
+                });
             }
         });
     });
@@ -35,16 +39,40 @@ $( document ).ready(function() {
             success: function (response) {
                 if (response) {
                     if (response.user_logged_in === true) {
-                        $.ajax({
-                            url: '/login-api/logout_user=True',
-                            type: 'GET',
-                            error: function (xhr, status, error) {
-                                console.log(xhr.status);
-                                console.log(status);
-                                console.log(error)
+                        swal({
+                            title: "Confirmation",
+                            text: "Are you sure you want to log out?",
+                            icon: "warning",
+                            buttons: true,
+                            dangerMode: true,
+                        }).then((willLogOut) => {
+                            if (willLogOut) {
+                                swal({
+                                    icon: "success",
+                                    title: "Logout successful!",
+                                    text: "You have been logged out successfully!",
+                                    button: false,
+                                    closeOnEsc: false,
+                                    closeOnClickOutside: false,
+                                    timer: 1000
+                                }).then(() => {
+                                    $.ajax({
+                                        url: '/login-api/logout_user=True',
+                                        type: 'GET',
+                                        error: function (xhr, status, error) {
+                                            swal({
+                                                icon: "error",
+                                                title: "Internal server error!",
+                                                text: "HTTP Error code: '" + xhr.status + " " + error + "'"
+                                            }).then(() => {
+                                                window.location = window.location
+                                            });
+                                        }
+                                    });
+                                    window.location = "/index/";
+                                });
                             }
                         });
-                        window.location = "/index/";
                     } else {
                         window.location = "/login/";
                     }
@@ -58,7 +86,7 @@ $( document ).ready(function() {
                     title: "Internal server error!",
                     text: "HTTP Error code: '" + xhr.status + " " + error + "'"
                 }).then(() => {
-                    reset_register_form();
+                    window.location = window.location
                 });
             }
         });

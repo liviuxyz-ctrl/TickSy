@@ -61,9 +61,27 @@ def login_page(request):
 
         elif request.method == 'POST':
             if settings.DEBUG:
-                logger.critical(f"Received POST (Failed JavaScript event overload) in request coming from: '{request.get_host()} "
+                logger.critical(f"Received POST (Failed JavaScript event overload) in request coming from: "
+                                f"'{request.get_host()} "
                                 f"{request.get_full_path()}'")
             return render(request, 'login.html')
+
+    else:
+        return HttpResponseRedirect('/index/')
+
+
+def register_page(request):
+    if not request.session.get('login_state', default=False):
+
+        if request.method == 'GET':
+            return render(request, 'register.html')
+
+        elif request.method == 'POST':
+            if settings.DEBUG:
+                logger.critical(f"Received POST (Failed JavaScript event overload) in request coming from: "
+                                f"'{request.get_host()} "
+                                f"{request.get_full_path()}'")
+            return render(request, 'register.html')
 
     else:
         return HttpResponseRedirect('/index/')
@@ -178,66 +196,28 @@ def register_error_validation(serializer_object, api_response, api_response_key=
 
 @api_view(['GET', 'POST'])
 def register(request):
-
     register_api_response = {
         'register_deny': False,
         'successful_registration': False,
-        'email_exists' : False,
-        'team_exists' : False,
-        'successful_pwd_match': False,
         'validator_error_messages': []
     }
     post_header_data_validation_list = ['register_fullname', 'register_email', 'register_department',
                                         'register_password', 'register_repassword', 'register_team_name', ]
 
     if not request.session.get('login_state', default=False):
+
         if request.method == 'GET':
-            # Display register page
-            return render(request, 'register.html')
+            register_api_response['login_deny'] = True
+            if settings.ENABLE_REST_FRAMEWORK_RESPONSE:
+                return Response(data=register_api_response)
+            else:
+                return JsonResponse(data=register_api_response)
 
         if request.method == 'POST':
             for required_post_header_key in post_header_data_validation_list:
                 if required_post_header_key not in request.data.keys():
                     logger.critical("Malformed HTTP POST request, missing form keys!")
                     return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-
-            for required_post_header_key in post_header_data_validation_list:
-                if not request.data[required_post_header_key]:
-                    login_api_response['validator_error_messages'].append("All fields cannot be empty!")
-                    if settings.ENABLE_REST_FRAMEWORK_RESPONSE:
-                        return Response(data=login_api_response)
-                    else:
-                        return JsonResponse(data=login_api_response)
-
-            try:
-                employee_entry = EmployeesPrivateData.objects.get(email=request.data['register_email'])
-                register_api_response['email_exists'] = True
-                if settings.ENABLE_REST_FRAMEWORK_RESPONSE:
-                    return Response(data=register_api_response)
-                else:
-                    return JsonResponse(data=register_api_response)
-            except ObjectDoesNotExist:
-                # if object does not exit it means that we can create an account with this email
-                pass
-
-
-            try:
-                team_entry = Teams.objects.get(team_name=request.data['register_team_name'])
-                register_api_response['team_exists'] = True
-            except ObjectDoesNotExist:
-                if settings.ENABLE_REST_FRAMEWORK_RESPONSE:
-                    return Response(data=register_api_response)
-                else:
-                    return JsonResponse(data=register_api_response)
-
-            if request.data['register_password'] == request.data['register_repassword']:
-                register_api_response['successful_pwd_match'] = True
-            else:
-                if settings.ENABLE_REST_FRAMEWORK_RESPONSE:
-                    return Response(data=register_api_response)
-                else:
-                    return JsonResponse(data=register_api_response)
-
 
             sanitized_employee_data = {'full_name': request.data['register_fullname'],
                                        'email': request.data['register_email'],

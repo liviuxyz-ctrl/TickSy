@@ -1,10 +1,5 @@
 let reset_register_form = function(){
-    $( "#register_form_full_name_input" ).val('')
-    $( "#register_form_email_input" ).val('')
-    $( "#register_form_password_input" ).val('')
-    $( "#register_form_verify_password_input" ).val('')
-    $( "#register_form_department_name_input" ).val('')
-    $( "#register_form_team_name_input" ).val('')
+    window.location = '/register/'
 };
 
 $( "#register_form" ).submit(function( event ) {
@@ -21,64 +16,97 @@ $( "#register_form" ).submit(function( event ) {
                 if (response.register_deny) {
                     window.location = '/index/'
                 } else {
-                    if (!response.validator_error_messages[0]) {
-                        if (response.successful_registration) {
-                            swal({
-                                icon: "success",
-                                title: "Register successful!",
-                                text: "Provided credential are correct!",
-                                button: false,
-                                closeOnEsc: false,
-                                closeOnClickOutside: false,
-                                timer: 1000
-                            }).then(() =>{
-                                window.location = '/index/'
+                    if (response.successful_registration) {
+                        swal({
+                            icon: "success",
+                            title: "Registration successful!",
+                            text: "Provided information is valid!",
+                            button: false,
+                            closeOnEsc: false,
+                            closeOnClickOutside: false,
+                            timer: 1000
+                        }).then(() => {
+                            window.location = '/index/'
+                        });
+                    } else {
+                        if (!response.validator_error_messages[0]) {
+                            $.each(response.validator_error_messages, function (key, field) {
+                                $.each(field, function (key, val) {
+                                    if (val.code === "blank") {
+                                        swal({
+                                            icon: "error",
+                                            title: "Registration failed!",
+                                            text: "Fields cannot be empty!"
+                                        }).then(() => {
+                                            reset_register_form();
+                                        });
+                                    }
+                                });
                             });
-                        } else {
-                            if (response.email_exists) {
+                            if (response.validator_error_messages.email) {
+                                $.each(response.validator_error_messages.email, function (key, val) {
+                                    if (val.message === "employees with this email already exists." && val.code === "unique") {
+                                        swal({
+                                            icon: "error",
+                                            title: "Registration failed!",
+                                            text: "Account with the provided email already exists."
+                                        }).then(() => {
+                                            reset_register_form();
+                                        });
+                                        return false;
+                                    }
+                                    if (val.message === "Enter a valid email address." && val.code === "invalid") {
+                                        swal({
+                                            icon: "error",
+                                            title: "Registration failed!",
+                                            text: "Enter a valid email address."
+                                        }).then(() => {
+                                            reset_register_form();
+                                        });
+                                        return false;
+                                    }
+                                });
+                            }
+                            if (response.validator_error_messages.password) {
                                 swal({
                                     icon: "error",
-                                    title: "Register failed!",
-                                    text: "Account with the provided email already exist!"
-                                }).then(() =>{
+                                    title: "Registration failed!",
+                                    text: response.validator_error_messages.password[0].message
+                                }).then(() => {
                                     reset_register_form();
                                 });
                             }
-                            else if(!response.team_exists){
+                            if (response.validator_error_messages.team_name) {
                                 swal({
-                                icon: "error",
-                                title: "Register failed!",
-                                text: "Team name is not correct!"
-                                }).then(() =>{
+                                    icon: "error",
+                                    title: "Registration failed!",
+                                    text: response.validator_error_messages.team_name[0].message
+                                }).then(() => {
                                     reset_register_form();
                                 });
                             }
-                            else if(!response.successful_pwd_match){
+                            if (response.validator_error_messages.re_password) {
                                 swal({
-                                icon: "error",
-                                title: "Register failed!",
-                                text: "Passwords don't match!"
-                                }).then(() =>{
+                                    icon: "error",
+                                    title: "Registration failed!",
+                                    text: response.validator_error_messages.re_password[0].message
+                                }).then(() => {
                                     reset_register_form();
                                 });
                             }
                         }
-                    }else{
-                        swal({
-                            icon: "error",
-                            title: "Form completion error!",
-                            text: response.validator_error_messages[0]
-                        }).then(() =>{
-                            reset_register_form();
-                        });
                     }
                 }
             }
         },
         error: function (xhr, status, error) {
-            console.log(xhr.status);
-            console.log(status);
-            console.log(error)
+            swal({
+                icon: "error",
+                title: "Internal server error!",
+                text: "HTTP Error code: '" + xhr.status + " " + error + "'"
+            }).then(() => {
+                reset_register_form();
+            });
         }
     });
 });

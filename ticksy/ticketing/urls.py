@@ -29,7 +29,7 @@ urlpatterns = [
     path('login-api/', views.login),
     path('login-api/logout_user=<str:logout_user>', views.login),
     path('user-state', views.request_login_state),
-    path('register/', views.register, name="register_page"),
+    path('register/', views.register_page, name="register_page"),
     path('register-api/', views.register),
     path('team/', views.register_team),
     path('team/lookup_team=<str:team_name>', views.lookup_team),

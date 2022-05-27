@@ -1,7 +1,7 @@
 import logging
 
 from .models import Employees, Teams, EmployeesPrivateData, Tickets
-from .serializers import EmployeesSerializer, UserSerializer, TeamSerializer
+from .serializers import EmployeesSerializer, UserSerializer, TeamSerializer, TicketSerializer
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
@@ -30,15 +30,72 @@ def about_us(request):
     if request.method == 'GET':
         return render(request, 'about-us.html')
 
-
+@api_view(['GET', 'POST'])
 def tickets_creator(request):
-    if request.method == 'GET':
 
-        if request.session.get('login_state', default=False):
+
+
+    if request.session.get('login_state', default=False):
+        create_ticket_api_response = {
+            'ticket_create_deny': False,
+            'ticket_successful_create': False,
+            'validator_error_messages': []
+        }
+
+        post_header_data_validation_list = ['ticket_create_user_name', 'ticket_create_user_email',
+                                            'ticket_create_to_employee_name', 'ticket_description',
+                                            'ticket_priority', 'ticket_create_to_team_name', 'ticket_domain',
+                                            'ticket_dead_line']
+
+        if request.method == 'GET':
             return render(request, 'tickets_creator.html')
-        else:
-            return render(request, 'login.html')
 
+
+        if request.method == 'POST':
+            # for required_post_header_key in post_header_data_validation_list:
+            #     if required_post_header_key not in request.data.keys():
+            #         logger.critical("Malformed HTTP POST request, missing form keys!")
+            #         return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+
+
+
+            sanitized_ticket_data = {  'user_full_name': request.data['ticket_create_user_name'],
+                                       'user_email': request.data['ticket_create_user_email'],
+                                       'due_datetime': request.data['register_department'],
+                                       'finish_at': request.data['register_team_name'],
+                                       'status': 'ASSIGNED',
+                                       'importance': request.data['ticket_priority'],
+                                       'responsible_team_id': request.data['ticket_create_to_team_name'],
+                                       'responsible_employee_id': request.data['ticket_create_to_employee_name'],
+                                       'description': request.data['ticket_description']
+                                       }
+            ticket = TicketSerializer(data=sanitized_ticket_data)
+
+            # response_obj = register_error_validation(ticket, create_ticket_api_response)
+            # if response_obj:
+            #     return response_obj
+
+            ticket_obj = ticket.save()
+
+            if ticket_obj is None:
+                logger.critical("Failed to create ticket!")
+                return HttpResponse(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            create_ticket_api_response['ticket_successful_create'] = True
+
+            if settings.ENABLE_REST_FRAMEWORK_RESPONSE:
+                return Response(data=create_ticket_api_response)
+            else:
+                return JsonResponse(data=create_ticket_api_response)
+
+
+    else:
+            pass
+        # logger.debug(f"Register deny, user '{request.session['user_email']}' already logged in!")
+        # register_api_response['register_deny'] = True
+        # register_api_response['successful_registration'] = None
+        # register_api_response['validator_error_messages'] = None
+        # return Response(data=register_api_response)
 
 def tickets_list(request):
     if request.method == 'GET':
@@ -354,27 +411,27 @@ def lookup_team(request, team_name):
         return Response(data=lookup_team_api_response)
 
 
-def ticket(request):
-    if request.method == 'POST':
-
-        fromNameT = request.POST.get('fromname')
-        fromEmailT = request.POST.get('fromemail')
-        toT = request.POST.get('to')
-        descriptionT = request.POST.get('description')
-        priorityT = request.POST.get('priority')
-        teamT = request.POST.get('team')
-        domainT = request.POST.get('domain')
-        deadlineT = request.POST.get('deadline')
-
-        if fromNameT and fromEmailT and toT and descriptionT and priorityT and teamT and domainT and deadlineT:
-            ticket = Tickets()
-            ticket.user_full_name = fromNameT
-            ticket.user_email = fromEmailT
-            ticket.responsible_team_id = Teams.objects.get(team_name=teamT)
-            ticket.responsible_employee_id = Employees.objects.get(full_name=toT)
-            ticket.description = descriptionT
-            ticket.due_datetime = deadlineT
-
-            ticket.save()
-            return render(request, 'test.html')
-    return render(request, 'ticket.html')
+# def ticket(request):
+#     if request.method == 'POST':
+#
+#         fromNameT = request.POST.get('fromname')
+#         fromEmailT = request.POST.get('fromemail')
+#         toT = request.POST.get('to')
+#         descriptionT = request.POST.get('description')
+#         priorityT = request.POST.get('priority')
+#         teamT = request.POST.get('team')
+#         domainT = request.POST.get('domain')
+#         deadlineT = request.POST.get('deadline')
+#
+#         if fromNameT and fromEmailT and toT and descriptionT and priorityT and teamT and domainT and deadlineT:
+#             ticket = Tickets()
+#             ticket.user_full_name = fromNameT
+#             ticket.user_email = fromEmailT
+#             ticket.responsible_team_id = Teams.objects.get(team_name=teamT)
+#             ticket.responsible_employee_id = Employees.objects.get(full_name=toT)
+#             ticket.description = descriptionT
+#             ticket.due_datetime = deadlineT
+#
+#             ticket.save()
+#             return render(request, 'test.html')
+#     return render(request, 'ticket.html')

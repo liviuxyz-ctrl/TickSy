@@ -23,6 +23,7 @@ urlpatterns = [
     path('index/', views.index, name="home_page"),
     path('about-us/', views.about_us, name="about_us_page"),
     path('create-ticket/', views.tickets_creator, name="ticket_creator_page"),
+    path('create-ticket-api/', views.ticket),
     path('tickets/', views.tickets_list, name="ticket_list_page"),
     path('contact/', views.contact_page, name="contact_page"),
     path('login/', views.login_page, name="login_page"),
@@ -32,6 +33,5 @@ urlpatterns = [
     path('register/', views.register_page, name="register_page"),
     path('register-api/', views.register),
     path('team/', views.register_team),
-    path('team/lookup_team=<str:team_name>', views.lookup_team),
-    path('ticket/', views.ticket)
+    path('team/lookup_team=<str:team_name>', views.lookup_team)
 ]

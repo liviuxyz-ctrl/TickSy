@@ -103,26 +103,19 @@ class TeamSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.team_name = validated_data.get('team_name', instance.full_name)
-        instance.team_head_full_name = validated_data.get('team_head_full_name', instance.team_head_full_name)
-        instance.team_head_email = validated_data.get('team_head_email', instance.team_head_email)
-        instance.open_tickets = validated_data.get('open_tickets', instance.open_tickets)
-        instance.closed_tickets_month = validated_data.get('closed_tickets_month', instance.closed_tickets_month)
-        instance.number_of_members = validated_data.get('number_of_members', instance.number_of_members)
+        instance.team_head_full_name = validated_data.get('team_head_full_name', instance.full_name)
+        instance.team_head_email = validated_data.get('team_head_email', instance.full_name)
+        instance.open_tickets = validated_data.get('open_tickets', instance.full_name)
+        instance.closed_tickets_month = validated_data.get('closed_tickets_month', instance.full_name)
+        instance.number_of_members = validated_data.get('number_of_members', instance.full_name)
         instance.save()
 
 
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tickets
-        fields = ['user_full_name', 'user_email', 'due_datetime', 'finish_at', 'status', 'importance',
+        fields = ['user_full_name', 'user_email', 'created_at', 'due_datetime', 'finish_at', 'status', 'importance',
                   'responsible_team_id', 'responsible_employee_id', 'description']
-
-    @classmethod
-    def validate_due_date(cls, value):
-        if value <= timezone.now():
-            raise ValidationError(f'Date {value} cannot be in the past!', code='due_date_wrong')
-        return value
-
 
     @classmethod
     def validate_user_email(cls, value):
@@ -143,20 +136,3 @@ class TicketSerializer(serializers.ModelSerializer):
         except ObjectDoesNotExist:
             raise ValidationError(f'Employee with id {value} does not exist!', code='employee_does_not_exist')
         return value
-
-    def create(self, validated_data):
-        return Tickets.objects.create(**validated_data)
-
-
-
-    def update(self, instance, validated_data):
-        instance.user_full_name = validated_data.get('user_full_name', instance.user_full_name)
-        instance.user_email = validated_data.get('user_email', instance.user_email)
-        instance.responsible_team_id = validated_data.get('responsible_team_id', instance.responsible_team_id)
-        instance.responsible_employee_id = validated_data.get('responsible_employee_id', instance.responsible_employee_id)
-        instance.description = validated_data.get('description', instance.description)
-        instance.due_datetime = validated_data.get('due_datetime', instance.due_datetime)
-        instance.finish_at = validated_data.get('finish_at', instance.finish_at)
-        instance.status = validated_data.get('status', instance.status)
-        instance.importance = validated_data.get('importance', instance.importance)
-        instance.save()

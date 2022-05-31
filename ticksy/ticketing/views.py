@@ -404,7 +404,6 @@ def ticket(request):
             for required_post_header_key in post_header_data_validation_list:
                 if required_post_header_key not in request.data.keys():
                     logger.critical("Malformed HTTP POST request, missing form keys!")
-                    print(required_post_header_key)
                     return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
             try:

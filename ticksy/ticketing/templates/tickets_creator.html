@@ -53,9 +53,9 @@
                                     <div class="card-body" data-aos="fade">
                                         <div class="row">
                                             <div class="col-sm-12 col-md-8 col-lg-8">
-                                                <div class="mb-3"><label class="form-label" for="service_name"><strong>From *</strong></label><input class="form-control" type="text" id="ticket_create_user_name" placeholder="Your Name" required="">
+                                                <div class="mb-3"><label class="form-label" for="service_name"><strong>From *</strong></label><input class="form-control" type="text" name="ticket_create_user_name" placeholder="Your Name" required="">
                                                     <div></div>
-                                                    <div class="mb-3"><input class="form-control" type="text" id="ticket_create_user_email" placeholder="Your email" required="yes" style="margin: 10px 0px 0px 1px;">
+                                                    <div class="mb-3"><input class="form-control" type="text" name="ticket_create_user_email" placeholder="Your Email" required="yes" style="margin: 10px 0px 0px 1px;">
                                                         <div></div>
                                                     </div>
                                                 </div>
@@ -64,14 +64,14 @@
                                                 <div class="mb-3">
                                                     <div class="mb-3"></div>
                                                 </div>
-                                                <div class="mb-3"><label class="form-label" for="service_name"><strong>Domain *</strong></label><input class="form-control" type="text" id="ticket_domain" placeholder="" required=""></div>
-                                                <div class="mb-3"><label class="form-label" for="service_name"><strong>To *</strong></label><input class="form-control" type="text" id="ticket_create_to_employee_name" placeholder="Responsible Person" required=""></div>
-                                                <div class="mb-3"><label class="form-label" for="service_name"><strong>Team *</strong></label><input class="form-control" type="text" id="ticket_create_to_team_name" placeholder="Responsible team" required=""></div>
+                                                <div class="mb-3"><label class="form-label" for="service_name"><strong>Domain *</strong></label><input class="form-control" type="text" name="ticket_domain" placeholder=""></div>
+                                                <div class="mb-3"><label class="form-label" for="service_name"><strong>To *</strong></label><input class="form-control" type="text" name="ticket_create_to_employee_name" placeholder="Responsible Person" required=""></div>
+                                                <div class="mb-3"><label class="form-label" for="service_name"><strong>Team *</strong></label><input class="form-control" type="text" name="ticket_create_to_team_name" placeholder="Responsible team" required=""></div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col">
-                                                <div class="mb-3"><label class="form-label" for="client_description"><strong>Description *</strong><br></label><textarea class="form-control" id="ticket_description" rows="4" placeholder="Description service" required=""></textarea>
+                                                <div class="mb-3"><label class="form-label" for="client_description"><strong>Description *</strong><br></label><textarea class="form-control" name="ticket_description" rows="4" placeholder="Description service" required=""></textarea>
                                                     <div class="mb-3"><label class="form-label" for="client_description"><strong>Attachements * (place holder)</strong><br></label><input class="form-control" type="file" id="files"></div>
                                                 </div>
                                             </div>
@@ -85,7 +85,7 @@
                                         </div>
                                         <div class="row mb-2">
                                             <div class="col">
-                                                <div class="mb-3"><label class="form-label" for="service_client_start_date"><strong>Priority</strong><br></label></div><select class="form-select" id="ticket_priority">
+                                                <div class="mb-3"><label class="form-label" for="service_client_start_date"><strong>Priority</strong><br></label></div><select class="form-select" name="ticket_priority">
                                                     <optgroup label="This is a group">
                                                         <option value="LOW" selected="">LOW</option>
                                                         <option value="MEDIUM">MEDIUM</option>
@@ -95,13 +95,13 @@
                                                 </select>
                                             </div>
                                             <div class="col">
-                                                <div class="mb-3"><label class="form-label" for="service_client_end_date"><strong>Dead Line *</strong><br></label><input class="form-control" id="ticket_dead_line" type="date" required="" style="margin-top: 13px;"></div>
+                                                <div class="mb-3"><label class="form-label" for="service_client_end_date"><strong>Dead Line *</strong><br></label><input class="form-control" name="ticket_dead_line" type="date" required="" style="margin-top: 13px;"></div>
                                             </div>
                                         </div>
                                         <div class="mb-3"></div>
                                     </div>
                                 </div>
-                                <div class="text-end mb-3"><button class="btn btn-primary btn-lg" id="saveTicket" type="submit" style="margin-right: 10px;">Save ticket</button><a class="btn btn-danger btn-lg" role="button" id="cancelTicket" href="services.html" style="background: var(--bs-gray);">Cancel</a></div>
+                                <div class="text-end mb-3"><button class="btn btn-primary btn-lg" id="saveTicket" type="submit" style="margin-right: 10px;">Save ticket</button><a class="btn btn-danger btn-lg" role="button" id="cancelTicket" href="{% url 'home_page' %}" style="background: var(--bs-gray);">Cancel</a></div>
                             </form>
                         </div>
                     </div>

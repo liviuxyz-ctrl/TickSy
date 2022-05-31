@@ -1,4 +1,4 @@
-from time import timezone
+from datetime import datetime, timezone
 from .models import Employees, EmployeesPrivateData, Teams, Tickets
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ObjectDoesNotExist
@@ -123,9 +123,9 @@ class TicketSerializer(serializers.ModelSerializer):
         return value
 
     @classmethod
-    def validate_due_date(cls, value):
-        if value <= timezone.now():
-            raise ValidationError(f'Date {value} cannot be in the past!', code='due_date_wrong')
+    def validate_due_datetime(cls, value):
+        # if value < datetime.now(timezone.utc):
+        #     raise ValidationError(f'Due-date cannot be in the past!', code='due_date_wrong')
         return value
 
     def create(self, validated_data):

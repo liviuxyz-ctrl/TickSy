@@ -10,4 +10,4 @@ from django.conf import settings
 # from models import EmployeesPrivateData
 #
 # e1 = EmployeesPrivateData(fullname="Cosmin Bonchish",email="cosmin.bonchish@gmail.com",password="12345")
-# e1.save()
+# e1.saveO

@@ -73,6 +73,7 @@ WSGI_APPLICATION = 'ticksy.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+# TO DO
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',

@@ -6,5 +6,5 @@ git config --global  user.email liviu2002liviu@gmail.com;
 
 si nici a doua oara nu m-am invatat alcolul tot ma luat.
 
-
+a treia oara e cu noroc
 

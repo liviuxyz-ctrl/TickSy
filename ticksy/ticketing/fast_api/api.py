@@ -2,7 +2,6 @@ from django.http import JsonResponse
 from fastapi import FastAPI
 from ..models import Tickets
 from ..views import logger
-from django.shortcuts import get_object_or_404
 
 
 app = FastAPI()
@@ -47,6 +46,21 @@ def lookup_ticket(request, ticket_id : int):
 
     else:
         logger.debug(f"Team lookup deny, user not logged in!")
+        api_deny_response = {
+            "ticket_lookup_deny": True
+        }
+        return JsonResponse(data=api_deny_response)
+
+@app.get("/ticket-count")
+def retrieve_ticket_count(request):
+    if request.session.get('login_state', default=False):
+        ticket_count = Tickets.objects.count()
+
+        return JsonResponse(data={
+            'number_of_tickets': ticket_count})
+
+    else:
+        logger.debug(f"Number of tickets deny, user not logged in!")
         api_deny_response = {
             "ticket_lookup_deny": True
         }

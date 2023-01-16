@@ -16,7 +16,7 @@
 from django.contrib import admin
 from django.urls import path
 from . import views
-from .fast_api.api import lookup_ticket
+from .fast_api.api import lookup_ticket, retrieve_ticket_count
 
 
 urlpatterns = [
@@ -35,5 +35,6 @@ urlpatterns = [
     path('register-api/', views.register),
     path('team/', views.register_team),
     path('team/lookup_team=<str:team_name>', views.lookup_team),
-    path('ticket/<int:ticket_id>', lookup_ticket)
+    path('ticket/<int:ticket_id>', lookup_ticket),
+    path('ticket-count/', retrieve_ticket_count)
 ]

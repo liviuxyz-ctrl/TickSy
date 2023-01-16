@@ -24,16 +24,22 @@ def lookup_ticket(request, ticket_id : int):
 
         try:
             ticket = Tickets.objects.get(id=ticket_id)
+            logger.debug(ticket.due_datetime.year)
+            team_name = ticket.responsible_team_id.team_name
+            employee_name = ticket.responsible_employee_id.full_name
+            due_date = ticket.due_datetime.strftime("%c")
+            creation_time = ticket.created_at.strftime("%c")
             ticket_information = {
+                "ticket_id": str(ticket_id),
                 "user_full_name": ticket.user_full_name,
                 "user_email": ticket.user_email,
-                "created_at": ticket.created_at,
-                "due_datetime": ticket.due_datetime,
+                "created_at": creation_time,
+                "due_datetime": due_date,
                 "finish_at": ticket.finish_at,
                 "status": ticket.status,
                 "importance": ticket.importance,
-                "responsible_team_id": ticket.responsible_team_id.id,
-                "responsible_employee_id": ticket.responsible_employee_id.id,
+                "responsible_team_name": team_name,
+                "responsible_employee_name": employee_name,
                 "description": ticket.description
             }
         except:
